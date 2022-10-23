@@ -12,7 +12,7 @@ clc;
 % Leitura dos sinais de RF gerados pela ultrassonix com o MATLAB
 
 %função load_ux_signal fornecida pela ultrassonix
-[x header params actual_frames] = load_ux_signal('data/18-06-05.rf',1,1);
+[x header params actual_frames] = load_ux_signal('data/18-08-36.rf',1,1);
 
 %armazenando os dados de interesse em uma variável
 data = x;
@@ -33,7 +33,7 @@ figure; plot(ScanLine)
 hold on
 plot(envelope,'r');
 hold off
-saveas(gcf, 'Envelope.jpg');
+saveas(gcf, 'conversao_varredura/envelope.jpg');
 
 %Processamento de toda a matriz de RF
 I = data (:,:,1);                                     %Para pegar todas as amostras de todos os 
@@ -56,7 +56,7 @@ Hm = Hm./max(max(Hm));                %Após subtração, divide-se ponto a ponto p
 
 %plota Figure_2
 figure, imshow(Hm);
-saveas(gcf, 'LogComp.jpg')
+saveas(gcf, 'conversao_varredura/LogComp.jpg')
 
 %Redimensionamento da Imagem
 H2=imresize(Hm, [2080/10 191]);
@@ -66,7 +66,7 @@ H3 = imadjust(H2);                            %redimensionamento da imagem
 
 %plota Figure_3
 figure, imshow(H3);
-saveas(gcf, 'Redimensionada.jpg')
+saveas(gcf, 'conversao_varredura/Redimensionada.jpg')
 
 %--------------------------------------------
 % Rotina
@@ -128,8 +128,11 @@ valor_final_Env_Log((N*3/4)-a:(N*3/4)+a,ne*3/4-b:ne*3/4+b)= -50;
 %---------------------------------- 
 % Imagem simulada antes da conversão de varre?dura 
 %---------------------------------- 
-figure; colormap(gray); 
+figure; colormap(gray);
 imagesc(theta_convexo_i,(z-R)*1e3,valor_final_Env_Log); 
+
+saveas(gcf, 'conversao_varredura/image_before_varredura.jpg')
+
 xlabel('\theta_c_o_n_v_e_x_o [\circ]'); 
 ylabel('Profundidade z[mm]'); 
 axis tight; colorbar; 
@@ -139,6 +142,9 @@ axis tight; colorbar;
 figure; colormap(gray); 
 h=surf((xc-R)*1e3,(yc)*1e3,valor_final_Env_Log, 'edgecolor', 'none'); 
 view(90,90); 
+
+saveas(gcf, 'conversao_varredura/image_after_varredura.jpg')
+
 xlabel('Profundidade z[mm]'); 
 ylabel('Eixo x[mm]'); 
 axis image; colorbar; 

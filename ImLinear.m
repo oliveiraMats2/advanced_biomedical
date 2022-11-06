@@ -11,16 +11,17 @@ clear all
 % Leitura dos sinais de RF gerados pela ultrassonix com o MATLAB
 
 %função load_ux_signal fornecida pela ultrassonix
-[x header params actual_frames] = load_ux_signal('data/18-02-46.rf',1,1);
+[x header params actual_frames] = load_ux_signal('data/18-06-05.rf',1,1);
 
 %armazenando os dados de interesse em uma variável
 data = x;
 
-%função read_sonixRF análoga a da ultrassonix modificada pelo Ramon
-%[header, rf_data] = read_sonixRF('14-30-46.rf');
-%data = rf_data;
+%% paper pre processing classical
+%data = pre_processing_classical(data, 1, 1);
+
 %%
 size(data)                                           %verifica as dimensões da matriz de dados
+
 %%
 %Envelope para uma Scanline
 ScanLine = data(:,95,1);                      %para pegar todas as amostras de um único elemento
@@ -66,3 +67,29 @@ H3 = imadjust(H2);                            %redimensionamento da imagem
 %plota Figure_3
 figure, imshow(H3);
 saveas(gcf, 'IA751_Linear.jpg')
+%% Try new enhancement
+Hm = imresize(Hm, [2080/10 191]);
+
+pout_imadjust = imadjust(Hm);
+pout_imadjust = imresize(pout_imadjust, [2080/10 191]);
+
+pout_histeq = histeq(Hm);
+pout_histeq = imresize(pout_histeq, [2080/10 191]);
+
+pout_adapthisteq = adapthisteq(Hm);
+pout_adapthisteq = imresize(pout_adapthisteq, [2080/10 191]);
+
+figure
+montage({Hm, pout_imadjust, pout_histeq, pout_adapthisteq},"Size",[1 4])
+title("Original Image and Enhanced Images using imadjust, histeq, and adapthisteq")
+
+%% sharpen filter
+b = imsharpen(pout_imadjust,'Radius',4,'Amount',1);
+figure, imshow(b)
+title('Sharpened Image');
+%% open and close morphological operation
+se = strel('disk',5);
+
+afterOpening = imclose(pout_imadjust,se);
+figure
+imshow(afterOpening,[]);

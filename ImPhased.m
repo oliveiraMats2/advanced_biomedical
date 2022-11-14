@@ -10,7 +10,7 @@ clear all
 % Leitura dos sinais de RF gerados pela ultrassonix com o MATLAB
 
 %função load_ux_signal fornecida pela ultrassonix
-[x header params actual_frames] = load_ux_signal('data/18-02-46.rf',1,100);
+[x header params actual_frames] = load_ux_signal('data/18-02-46.rf',1,1);
 
 %armazenando os dados de interesse em uma variável
 data = x;
@@ -58,6 +58,7 @@ saveas(gcf, 'LogComp.jpg')
 
 %Redimensionamento da Imagem
 H2=imresize(Hm, [2080/10 191]);
+% H3 = H2;
 H3 = imadjust(H2);                            %redimensionamento da imagem 
                                                           %necessário devido a diferença entre o numero 
                                                           %de amostras e de elementos
@@ -81,8 +82,8 @@ Hm=Hm';
 
 %Hm = reshape(Hm, [191, 2080]);
 
-figure, imagesc(scanConversion(Hm,linspace(ang_min,ang_max,N_lines),[depth width],1540,1/fSampling)); colormap gray; % imagem modo-B
+figure, imagesc(scanConversion(imadjust(Hm),linspace(ang_min,ang_max,N_lines),[depth width],1540,1/fSampling)); colormap gray; % imagem modo-B
 title('Out Scan Conversion');
 saveas(gcf, 'IA751_Phased.jpg')
-%S1 =scanConversion([1:128; 3], 0:45/127:45, [0.15 0.15], 1540, 20e6)
+S1 = scanConversion([1:128; 3], 0:45/127:45, [0.15 0.15], 1540, 20e6)
 %figure,imshow(S1);

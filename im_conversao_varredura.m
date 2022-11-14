@@ -12,7 +12,7 @@ clc;
 % Leitura dos sinais de RF gerados pela ultrassonix com o MATLAB
 
 %função load_ux_signal fornecida pela ultrassonix
-[x header params actual_frames] = load_ux_signal('data/18-08-36.rf',1,1);
+[x header params actual_frames] = load_ux_signal('data/18-08-36.rf',1,15);
 
 %armazenando os dados de interesse em uma variável
 data = x;
@@ -47,7 +47,7 @@ max(Hm(:))                                        %valor máximo das amostras
 min(Hm(:))                                         %valor minimo das amostras
 
 %Compressão Logaritmica
-Hm = log10(Hm);                               %compressao dos dados em escala logaritmica
+%Hm = log10(Hm);                               %compressao dos dados em escala logaritmica
 
 %Normalização dos dados
 Hm = Hm - min(min(Hm));                %Sinal pós CompLog é subtraido ponto a ponto 
@@ -74,14 +74,17 @@ saveas(gcf, 'conversao_varredura/Redimensionada.jpg')
 tic;            % inicia temporizador
 ne =128;
 i = 1:ne;
-kerf = 155e-6;
+pitch = 468;
 d = 0.41e-3;
+kerf = (pitch * 1e-6) - d; % kerf
+
 R = 40e-3;
-N = 4096;
-n = 1:N;
-c = 1540;
-fs = 40e6;
-t = (n/fs);
+N = header.h; % numero de amostras
+n = 1:N; % indice das amostras
+c = 1540; % velocidade do som
+% fs = 40e6; % frequência de amostragem
+fs = header.sf; % frequência de amostragem
+t = (n/fs)'; % escala de tempo
 
 %--------------------------------------------
 % Angulo de abertura do transdutor convexo
@@ -103,6 +106,7 @@ z = c*t/2+R;
 % Buffer de dados para simulação
 %--------------------------------------------
 valor_final_Env_Log = (rand(N, ne)-2)*25;
+% valor_final_Env_Log = x(:,:,2);
 
 %--------------------------------------------
 %Dados das inclusões para teste
@@ -140,7 +144,7 @@ axis tight; colorbar;
 % Imagem simulada após a conversão de varredura 
 %---------------------------------- 
 figure; colormap(gray); 
-h=surf((xc-R)*1e3,(yc)*1e3,valor_final_Env_Log, 'edgecolor', 'none'); 
+h=surf((xc-R)*1e3,(yc)*1e3,valor_final_Env_Log,'edgecolor','none');
 view(90,90); 
 
 saveas(gcf, 'conversao_varredura/image_after_varredura.jpg')

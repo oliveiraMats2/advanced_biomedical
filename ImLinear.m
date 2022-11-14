@@ -11,7 +11,9 @@ clear all
 % Leitura dos sinais de RF gerados pela ultrassonix com o MATLAB
 
 %função load_ux_signal fornecida pela ultrassonix
+%[x header params actual_frames] = load_ux_signal('data/18-02-46.rf',1,1);
 [x header params actual_frames] = load_ux_signal('data/18-06-05.rf',1,1);
+%[x header params actual_frames] = load_ux_signal('data/18-08-36.rf',1,1);
 
 %armazenando os dados de interesse em uma variável
 data = x;
@@ -81,15 +83,21 @@ pout_adapthisteq = imresize(pout_adapthisteq, [2080/10 191]);
 
 figure
 montage({Hm, pout_imadjust, pout_histeq, pout_adapthisteq},"Size",[1 4])
+
 title("Original Image and Enhanced Images using imadjust, histeq, and adapthisteq")
 
 %% sharpen filter
-b = imsharpen(pout_imadjust,'Radius',4,'Amount',1);
-figure, imshow(b)
-title('Sharpened Image');
-%% open and close morphological operation
-se = strel('disk',5);
+b = imsharpen(pout_imadjust,'Radius',5,'Amount',1);
+%figure
 
-afterOpening = imclose(pout_imadjust,se);
+title('Sharpened Image');
+
+%% openning and close
+
+se = strel('disk',2);
+
+afterOpening = imopen(pout_imadjust,se);
 figure
-imshow(afterOpening,[]);
+imshow(b)
+%$imshow(afterOpening,[]);
+%montage({pout_imadjust, b, afterOpening},"Size", [1 3])

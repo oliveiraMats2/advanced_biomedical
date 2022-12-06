@@ -51,7 +51,7 @@ for i=1:length(theta)
    
    fr = fr + proj(t+centro); % acumulador das projecoes
    
-   [2 100*i/180]
+   % [2 100*i/180]
 end
 fr = fr*pi/(2*length(theta));
 return;

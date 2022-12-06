@@ -13,14 +13,14 @@ function fr = ct(f)
 % informacao dos cantos
 [m n]=size(f);
 novadim=ceil(sqrt(2)*max([m n]));
-g=zeros(novadim,novadim);
-g( fix((novadim-m)/2):fix((novadim-m)/2)+m-1 , fix((novadim-n)/2):fix((novadim-n)/2)+n-1  )=f;
-figure, imshow(g);
+%g=zeros(novadim,novadim);
+%g( fix((novadim-m)/2):fix((novadim-m)/2)+m-1 , fix((novadim-n)/2):fix((novadim-n)/2)+n-1  )=f;
+figure, imshow(f);
 
 
 % laco para calculo de todas as 180 projecoes (1 a 180 graus com passo = 1 grau)
 for theta=1:180,
-   gr=rot2d(g,theta,fix(novadim/2),fix(novadim/2));
+   gr=rot2d(f,theta,fix(novadim/2),fix(novadim/2));
    %if theta==45| theta==90| theta==120, plotar imagem girando 
     %figure, imshow(gr);
    %end;
@@ -34,7 +34,7 @@ end;
 for con=1:180,
     fr=backproj(projecao,1:con);
     if con == 10| con == 20| con ==30| con ==40| con ==50| con==60| con==70| con==80| con==90| con==100| con==110| con==120| con==130| con==140| con==150| con==160| con==170| con==180 ,
-        %fr1=normaliza(fr);
+        %fr1=uint8(normaliza(fr));
         figure, imshow(fr); %| | | 
     end;
    
